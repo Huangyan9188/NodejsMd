@@ -10,21 +10,36 @@ fs=require('fs');
 var binaryServer=new BinaryServer({server:server,path:'/binjs-endpoint'});
 //server to tell the constructor that has a server ,only to attach 
 //path tell that path is the ws communication way
-
+var i=0;
+var clients=[];
 binaryServer.on('connection',function(client){
-	console.log('a new connection created');
-	var file=fs.createReadStream('../Files/1.jpg');
+	console.log('a new connection created the num is '+i);
+	clients.push(client);
+	i++;
+	//var file=fs.createReadStream('../Files/1.jpg');
 	//client.send(file);
-	var stream=client.createStream();//create the duplex tunnel
-	file.pipe(stream);
+	//var stream=client.createStream();//create the duplex tunnel
+	//file.pipe(stream);
 	client.on('stream',function(stream){
 		console.log('stream!stream!');
 		
-		var writestream=fs.createWriteStream('hello3.mp4');
-		stream.pipe(writestream);
-		stream.on('end',function(){
-			console.log('get the end!!');
-		});
+		// var writestream=fs.createWriteStream('hello3.mp4');
+		// stream.pipe(writestream);
+		// stream.on('end',function(){
+		// 	console.log('get the end!!');
+		// });
+		if(clients[1]){
+			console.log('clients1 exsits');
+			var dest=clients[1].createStream();
+			
+			stream.on('end',function(){
+				console.log('relay end');
+			});
+			stream.pipe(dest);
+			// dest.on('end',function(){
+			// 	console.log('relay end!');
+			// });
+		}
 	});
 });
 /*
