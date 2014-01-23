@@ -1,0 +1,33 @@
+<html>
+<head>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="http://cdn.binaryjs.com/0/binary.js"></script>
+</head>
+<body>
+	<input type='file'/>
+	<input type='submit'/>
+</body>
+<script type="text/javascript">
+	var client=BinaryClient("ws://localhost:9000/binjs-endpoint");
+	client.on('stream',function(stream){
+		alert('here comes the stream');
+		var binPack=[];
+		stream.on('data',function(data){
+			binPack.push(data);
+		});
+		stream.on('end',function(){
+			var img=document.createElement('img');
+			img.src=(window.URL||window.webkitURL).createObjectURL(new Blob(binPack));
+			document.body.appendChild(img);
+		});
+	});
+	$("input[type=submit]").click(function(evt){
+        // var file = $("input[type=file]")[0].files[0];
+        // delivery.send(file);
+        // evt.preventDefault();
+        alert(JSON.stringify($("input[type=file]")[0].files[0]));
+        var file = $("input[type=file]")[0].files[0];
+        client.send(file);
+      });
+</script>
+</html>
