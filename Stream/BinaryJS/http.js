@@ -28,7 +28,7 @@ binaryServer.on('connection',function(client){
 		// stream.on('end',function(){
 		// 	console.log('get the end!!');
 		// });
-		if(clients[1]){
+		if(clients[0]){
 			console.log('clients1 exsits');
 			var dest=clients[1].createStream();
 			
